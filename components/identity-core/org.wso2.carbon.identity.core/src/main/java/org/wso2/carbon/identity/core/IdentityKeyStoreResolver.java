@@ -27,6 +27,7 @@ import org.wso2.carbon.base.MultitenantConstants;
 import org.wso2.carbon.core.RegistryResources;
 import org.wso2.carbon.core.util.KeyStoreManager;
 import org.wso2.carbon.core.util.KeyStoreUtil;
+import org.wso2.carbon.identity.base.IdentityException;
 import org.wso2.carbon.identity.core.model.IdentityKeyStoreMapping;
 import org.wso2.carbon.identity.core.util.IdentityConfigParser;
 import org.wso2.carbon.identity.core.util.IdentityKeyStoreResolverConstants;
@@ -88,6 +89,14 @@ public class IdentityKeyStoreResolver {
     private KeyStore getKeyStore(String tenantDomain) throws IdentityKeyStoreResolverException {
 
         int tenantId = IdentityTenantUtil.getTenantId(tenantDomain);
+        try {
+            IdentityTenantUtil.initializeRegistry(tenantId);
+        } catch (IdentityException e) {
+            throw new IdentityKeyStoreResolverException(
+                    ErrorMessages.ERROR_CODE_ERROR_INITIALIZING_REGISTRY.getCode(),
+                    String.format(ErrorMessages.ERROR_CODE_ERROR_INITIALIZING_REGISTRY.getDescription(),
+                            tenantDomain), e);
+        }
         KeyStoreManager keyStoreManager = KeyStoreManager.getInstance(tenantId);
         try {
             if (MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(tenantDomain)) {
@@ -168,6 +177,15 @@ public class IdentityKeyStoreResolver {
         int tenantId = IdentityTenantUtil.getTenantId(tenantDomain);
         if (privateKeys.containsKey(String.valueOf(tenantId))) {
             return privateKeys.get(String.valueOf(tenantId));
+        }
+
+        try {
+            IdentityTenantUtil.initializeRegistry(tenantId);
+        } catch (IdentityException e) {
+            throw new IdentityKeyStoreResolverException(
+                    ErrorMessages.ERROR_CODE_ERROR_INITIALIZING_REGISTRY.getCode(),
+                    String.format(ErrorMessages.ERROR_CODE_ERROR_INITIALIZING_REGISTRY.getDescription(),
+                            tenantDomain), e);
         }
 
         KeyStoreManager keyStoreManager = KeyStoreManager.getInstance(tenantId);
@@ -258,6 +276,15 @@ public class IdentityKeyStoreResolver {
         int tenantId = IdentityTenantUtil.getTenantId(tenantDomain);
         if (publicCerts.containsKey(String.valueOf(tenantId))) {
             return publicCerts.get(String.valueOf(tenantId));
+        }
+
+        try {
+            IdentityTenantUtil.initializeRegistry(tenantId);
+        } catch (IdentityException e) {
+            throw new IdentityKeyStoreResolverException(
+                    ErrorMessages.ERROR_CODE_ERROR_INITIALIZING_REGISTRY.getCode(),
+                    String.format(ErrorMessages.ERROR_CODE_ERROR_INITIALIZING_REGISTRY.getDescription(),
+                            tenantDomain), e);
         }
 
         KeyStoreManager keyStoreManager = KeyStoreManager.getInstance(tenantId);
@@ -481,6 +508,16 @@ public class IdentityKeyStoreResolver {
             KeyStoreUtil.validateKeyStoreConfigName(configName);
 
             int tenantId = IdentityTenantUtil.getTenantId(tenantDomain);
+
+            try {
+                IdentityTenantUtil.initializeRegistry(tenantId);
+            } catch (IdentityException e) {
+                throw new IdentityKeyStoreResolverException(
+                        ErrorMessages.ERROR_CODE_ERROR_INITIALIZING_REGISTRY.getCode(),
+                        String.format(ErrorMessages.ERROR_CODE_ERROR_INITIALIZING_REGISTRY.getDescription(),
+                                tenantDomain), e);
+            }
+
             KeyStoreManager keyStoreManager = KeyStoreManager.getInstance(tenantId);
             String keyStoreName = IdentityKeyStoreResolverUtil.buildTenantKeyStoreName(tenantDomain);
             switch (configName) {

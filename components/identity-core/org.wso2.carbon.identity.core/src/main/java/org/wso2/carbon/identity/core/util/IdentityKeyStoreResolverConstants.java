@@ -35,7 +35,6 @@ public class IdentityKeyStoreResolverConstants {
     public static final String CONFIG_ELEM_WS_FEDERATION = "WS-Federation";
 
     // CustomKeyStoreMapping config attributes.
-    public static final String ATTR_NAME_PROTOCOL = "Protocol";
     public static final String ATTR_NAME_KEYSTORE_NAME = "KeyStoreName";
     public static final String ATTR_NAME_USE_IN_ALL_TENANTS = "UseInAllTenants";
 
@@ -119,6 +118,9 @@ public class IdentityKeyStoreResolverConstants {
         ERROR_CODE_ERROR_RETRIEVING_CUSTOM_KEYSTORE_CONFIGURATION(
                 "IKSR-10009", "Error retrieving custom keystore configuration.",
                 "Error occurred when retrieving custom keystore configuration for: %s."),
+        ERROR_CODE_ERROR_INITIALIZING_REGISTRY(
+                "IKSR-10010", "Error while initializing registry.",
+                "Error occurred when trying to initialize the registry for tenant: %s."),
 
         // Errors occurred within the IdentityKeyStoreResolver
         ERROR_CODE_INVALID_ARGUMENT(
